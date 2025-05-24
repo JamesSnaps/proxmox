@@ -40,3 +40,8 @@ qm set $VMID --boot c --bootdisk $DISK_BUS
 qm set $VMID --agent enabled=1
 
 echo "✅ VM $VMID setup complete! Start it with: qm start $VMID"
+
+# --- STEP 4: Cleanup ---
+echo "🧹 Cleaning up temporary files..."
+rm -f "$QCOW" "$QCOWXZ"
+echo "🧽 Cleanup complete!"
