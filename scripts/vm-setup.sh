@@ -14,7 +14,11 @@ sudo apt install -y \
     openssh-server \
     ntp \
 
-# Set up Docker’s official GPG key
+# Install NFS client utilities
+echo "📦 Installing NFS client utilities (nfs-common)..."
+sudo apt install -y nfs-common
+
+# Set up Docker's official GPG key
 echo "📦 Adding Docker repository..."
 sudo install -m 0755 -d /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
@@ -70,7 +74,7 @@ echo "✅ Docker is now configured to use /mnt/docker-data/docker (backed by hos
 
 # Install Netdata monitoring
 echo "📊 Installing Netdata for monitoring..."
-bash <(curl -L -Ss https://my-netdata.io/kickstart.sh)
+yes | bash <(curl -L -Ss https://my-netdata.io/kickstart.sh)
 vm_ip=$(hostname -I | awk '{print $1}')
 echo "✅ Netdata installation complete. Access it via http://$vm_ip:19999"
 
@@ -88,5 +92,11 @@ if [[ "$ssh_pub_key" == ssh-* ]]; then
 else
     echo "⚠️ Invalid SSH key format. Skipping SSH key setup."
 fi
+
+echo "🔧 Ensuring SSH daemon is configured for public key authentication..."
+sudo sed -i 's/^#*PubkeyAuthentication.*/PubkeyAuthentication yes/' /etc/ssh/sshd_config
+sudo sed -i 's/^#*PasswordAuthentication.*/PasswordAuthentication no/' /etc/ssh/sshd_config
+sudo sed -i 's|^#*AuthorizedKeysFile .*|AuthorizedKeysFile .ssh/authorized_keys|' /etc/ssh/sshd_config
+sudo systemctl restart ssh
 
 echo "✅ Bootstrap complete! You may need to log out and back in to use Docker without sudo."
