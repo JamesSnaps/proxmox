@@ -34,11 +34,13 @@ qm create $VMID --name $VMNAME --memory $MEMORY --cores $CORES \
 echo "📂 Importing disk..."
 qm importdisk $VMID "$QCOW" $STORAGE || { echo "❌ Disk import failed"; exit 1; }
 
+echo "🔧 Attaching disk to VM..."
+qm set $VMID --scsihw virtio-scsi-pci --$DISK_BUS $STORAGE:vm-${VMID}-disk-0
+
 echo "🪛 Resizing disk to 256GB..."
 qm disk resize $VMID $DISK_BUS 256G
 
 echo "🔧 Configuring VM boot and disk..."
-qm set $VMID --scsihw virtio-scsi-pci --$DISK_BUS $STORAGE:vm-${VMID}-disk-0
 qm set $VMID --boot c --bootdisk $DISK_BUS
 qm set $VMID --agent enabled=1
 
