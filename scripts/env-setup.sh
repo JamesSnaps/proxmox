@@ -12,9 +12,8 @@ if ! op account list | grep -q 'SIGNED_IN'; then
     eval $(op signin) || { echo "❌ 1Password sign-in failed"; exit 1; }
 fi
 
-# 📄 Fetch .env file from 1Password item
 echo "📄 Downloading .env file from 1Password..."
-if ! op document get ".env" --vault "Family" > /home/$USER/docker/.env; then
+if ! op document get "docker .env" --vault "Family" > /home/$USER/docker/.env; then
     echo "❌ Failed to download .env file from 1Password"
     exit 1
 fi
