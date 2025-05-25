@@ -6,7 +6,7 @@ set -e
 NETPLAN_FILE="/etc/netplan/99-vlans.yaml"
 
 # Interfaces to bring up
-INTERFACES=("ens19" "ens20" "ens21")
+INTERFACES=("ens19" "ens20" "ens21","ens22")
 
 echo "🔧 Creating Netplan config for VLAN interfaces..."
 
