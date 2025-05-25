@@ -11,7 +11,10 @@ eval $(op signin) || { echo "❌ 1Password sign-in failed"; exit 1; }
 
 # 📄 Fetch .env file from 1Password item
 echo "📄 Downloading .env file from 1Password..."
-op item get "docker .env" --field "file" > /home/$USER/docker/.env
+if ! op item get "docker .env" --field "file" > /home/$USER/docker/.env; then
+    echo "❌ Failed to download .env file from 1Password"
+    exit 1
+fi
 chmod 600 /home/$USER/docker/.env
 chown $USER:$USER /home/$USER/docker/.env
 echo "✅ .env file added to Docker folder"
