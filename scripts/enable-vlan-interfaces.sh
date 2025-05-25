@@ -2,24 +2,33 @@
 
 set -e
 
-# Interfaces to enable
+# Define the Netplan config file
+NETPLAN_FILE="/etc/netplan/99-vlans.yaml"
+
+# Interfaces to bring up
 INTERFACES=("ens19" "ens20" "ens21")
 
-echo "🔧 Backing up /etc/network/interfaces to /etc/network/interfaces.bak..."
-cp /etc/network/interfaces /etc/network/interfaces.bak
+echo "🔧 Creating Netplan config for VLAN interfaces..."
+
+# Build Netplan YAML
+cat <<EOF > "$NETPLAN_FILE"
+network:
+  version: 2
+  ethernets:
+EOF
 
 for iface in "${INTERFACES[@]}"; do
-    # Check if the interface config already exists
-    if ! grep -q "auto $iface" /etc/network/interfaces; then
-        echo "✅ Adding $iface to /etc/network/interfaces..."
-        echo -e "\nauto $iface\niface $iface inet manual" >> /etc/network/interfaces
-    else
-        echo "ℹ️ Interface $iface already configured in /etc/network/interfaces"
-    fi
-
-    # Bring the interface up immediately
-    echo "🔌 Bringing up $iface..."
-    ip link set "$iface" up
+  echo "    $iface:" >> "$NETPLAN_FILE"
+  echo "      dhcp4: no" >> "$NETPLAN_FILE"
 done
 
-echo "✅ All interfaces configured and brought up."
+echo "✅ Applying Netplan config..."
+netplan apply
+
+# Also bring interfaces up now just in case
+for iface in "${INTERFACES[@]}"; do
+  echo "🔌 Bringing up $iface manually..."
+  ip link set "$iface" up || true
+done
+
+echo "✅ VLAN interfaces configured and active."
