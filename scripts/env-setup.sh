@@ -6,12 +6,15 @@ echo 'deb [arch=amd64 signed-by=/usr/share/keyrings/1password-archive-keyring.gp
 sudo apt update && sudo apt install -y 1password-cli
 
 # 🧑‍💻 Sign in to 1Password
-echo "👉 Signing in to 1Password (manual step if not cached)..."
-eval $(op signin) || { echo "❌ 1Password sign-in failed"; exit 1; }
+# Check if already signed in
+if ! op account list | grep -q 'SIGNED_IN'; then
+    echo "👉 Signing in to 1Password (manual step)..."
+    eval $(op signin) || { echo "❌ 1Password sign-in failed"; exit 1; }
+fi
 
 # 📄 Fetch .env file from 1Password item
 echo "📄 Downloading .env file from 1Password..."
-if ! op item get "docker .env" --field "file" > /home/$USER/docker/.env; then
+if ! op document get ".env" --vault "Family" > /home/$USER/docker/.env; then
     echo "❌ Failed to download .env file from 1Password"
     exit 1
 fi
