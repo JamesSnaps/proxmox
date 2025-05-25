@@ -59,6 +59,10 @@ echo "📂 Copying $STACK_FOLDER to $DEST_FOLDER..."
 mkdir -p "$DEST_FOLDER"
 cp -r "$TMP_DIR/docker-stacks/$STACK_FOLDER/"* "$DEST_FOLDER"
 
+# 🔒 Make docker-compose.sh executable
+echo "🔒 Making docker-compose.sh executable..."
+chmod +x "$DEST_FOLDER/docker-compose.sh"
+
 # 🧹 Cleanup
 rm -rf "$TMP_DIR"
 echo "✅ $STACK_FOLDER copied to $DEST_FOLDER"
