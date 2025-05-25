@@ -4,13 +4,25 @@
 GITHUB_USER="JamesSnaps"
 REPO_NAME="docker"  # e.g., private repo name
 
-# Prompt user to select which folder to clone
-echo "Which stack do you want to clone? (vm-core or vm-media)"
-read -r STACK_FOLDER
-if [[ "$STACK_FOLDER" != "vm-core" && "$STACK_FOLDER" != "vm-media" ]]; then
-  echo "❌ Invalid option. Please choose either 'vm-core' or 'vm-media'."
-  exit 1
-fi
+# Create a numbered selection menu
+echo "Which stack do you want to clone?"
+echo "1) vm-core"
+echo "2) vm-media"
+read -p "Enter your choice (1 or 2): " choice
+
+# Convert choice to folder name
+case $choice in
+    1)
+        STACK_FOLDER="vm-core"
+        ;;
+    2)
+        STACK_FOLDER="vm-media"
+        ;;
+    *)
+        echo "❌ Invalid option. Please choose either 1 or 2."
+        exit 1
+        ;;
+esac
 
 DEST_FOLDER="/home/$USER/docker/$STACK_FOLDER"
 
