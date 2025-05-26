@@ -33,10 +33,14 @@ echo "📁 Creating virtiofs mount points for docker-data..."
 sudo mkdir -p /mnt/docker-core
 sudo mkdir -p /mnt/plex-data
 sudo mkdir -p /mnt/docker-media
+sudo mkdir -p /mnt/plex-transcodes
+sudo mkdir -p /mnt/downloads
 
 echo "🔗 Mounting virtiofs shares..."
 sudo mount -t virtiofs appdata-core /mnt/docker-core
 sudo mount -t virtiofs plex /mnt/plex-data
 sudo mount -t virtiofs appdata_media /mnt/docker-media
+sudo mount -t virtiofs plex-transcodes /mnt/plex-transcodes
+sudo mount -t virtiofs downloads /mnt/downloads
 
 echo "✅ Virtiofs shares mounted!"
