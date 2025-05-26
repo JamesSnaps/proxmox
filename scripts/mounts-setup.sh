@@ -28,3 +28,15 @@ echo "🔄 Mounting all file systems..."
 sudo mount -a
 
 echo "✅ Media shares mounted!"
+
+echo "📁 Creating virtiofs mount points for docker-data..."
+sudo mkdir -p /mnt/docker-core
+sudo mkdir -p /mnt/plex-data
+sudo mkdir -p /mnt/docker-media
+
+echo "🔗 Mounting virtiofs shares..."
+sudo mount -t virtiofs appdata-core /mnt/docker-core
+sudo mount -t virtiofs plex /mnt/plex-data
+sudo mount -t virtiofs appdata_media /mnt/docker-media
+
+echo "✅ Virtiofs shares mounted!"
