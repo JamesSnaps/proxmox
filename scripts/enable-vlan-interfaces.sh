@@ -1,12 +1,13 @@
 #!/bin/bash
 
-set -e
+# Don't exit on errors since we want to handle missing interfaces gracefully
+# set -e
 
 # Define the Netplan config file
 NETPLAN_FILE="/etc/netplan/99-vlans.yaml"
 
 # Interfaces to bring up
-INTERFACES=("ens19" "ens20" "ens21","ens22")
+INTERFACES=("ens19" "ens20" "ens21" "ens22" "ens23")
 
 echo "🔧 Creating Netplan config for VLAN interfaces..."
 
@@ -17,18 +18,34 @@ network:
   ethernets:
 EOF
 
+# Track if we found any valid interfaces
+found_interfaces=false
+
 for iface in "${INTERFACES[@]}"; do
-  echo "    $iface:" >> "$NETPLAN_FILE"
-  echo "      dhcp4: no" >> "$NETPLAN_FILE"
+  # Check if interface exists
+  if ip link show "$iface" >/dev/null 2>&1; then
+    echo "    $iface:" >> "$NETPLAN_FILE"
+    echo "      dhcp4: no" >> "$NETPLAN_FILE"
+    found_interfaces=true
+  else
+    echo "⚠️  Interface $iface not found, skipping..."
+  fi
 done
 
-echo "✅ Applying Netplan config..."
-netplan apply
+if [ "$found_interfaces" = true ]; then
+  echo "✅ Applying Netplan config..."
+  netplan apply
 
-# Also bring interfaces up now just in case
-for iface in "${INTERFACES[@]}"; do
-  echo "🔌 Bringing up $iface manually..."
-  ip link set "$iface" up || true
-done
+  # Also bring interfaces up now just in case
+  for iface in "${INTERFACES[@]}"; do
+    if ip link show "$iface" >/dev/null 2>&1; then
+      echo "🔌 Bringing up $iface manually..."
+      ip link set "$iface" up || true
+    fi
+  done
 
-echo "✅ VLAN interfaces configured and active."
+  echo "✅ VLAN interfaces configured and active."
+else
+  echo "❌ No valid interfaces found to configure."
+  exit 1
+fi
