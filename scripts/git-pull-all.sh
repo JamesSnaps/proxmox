@@ -19,6 +19,9 @@ sync_repo() {
     # Get the current branch name
     local branch=$(git branch --show-current)
     
+    # Configure git pull to use rebase
+    git config pull.rebase true
+    
     # Pull the latest changes
     echo "📥 Pulling latest changes from branch: $branch"
     if git pull; then
