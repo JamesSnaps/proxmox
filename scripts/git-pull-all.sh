@@ -28,7 +28,14 @@ sync_repo() {
         echo "✅ Successfully synced $repo_path"
         return 0
     else
-        echo "❌ Failed to sync $repo_path"
+        # Check if there's a rebase in progress
+        if [ -d ".git/rebase-merge" ] || [ -d ".git/rebase-apply" ]; then
+            echo "⚠️  Rebase conflict detected. Attempting to abort rebase..."
+            git rebase --abort
+            echo "❌ Failed to sync $repo_path due to rebase conflicts. Please resolve manually."
+        else
+            echo "❌ Failed to sync $repo_path"
+        fi
         return 1
     fi
 }
