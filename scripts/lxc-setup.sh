@@ -28,18 +28,26 @@ fi
 # Optionally copy SSH public key for passwordless login
 read -p "Do you want to copy your SSH public key to the container for passwordless login? (y/n): " COPYKEY
 if [[ "$COPYKEY" == "y" ]]; then
-  read -p "Enter path to your public SSH key (default: ~/.ssh/id_rsa.pub): " KEY_PATH
-  KEY_PATH=${KEY_PATH:-~/.ssh/id_rsa.pub}
-  if [[ -f "$KEY_PATH" ]]; then
-    PUBKEY=$(cat "$KEY_PATH")
-    pct exec "$CTID" -- mkdir -p /home/"$USERNAME"/.ssh
-    pct exec "$CTID" -- bash -c "echo '$PUBKEY' >> /home/$USERNAME/.ssh/authorized_keys"
-    pct exec "$CTID" -- chown -R "$USERNAME":"$USERNAME" /home/"$USERNAME"/.ssh
-    pct exec "$CTID" -- chmod 700 /home/"$USERNAME"/.ssh
-    pct exec "$CTID" -- chmod 600 /home/"$USERNAME"/.ssh/authorized_keys
+  read -p "Do you want to input your public key directly? (y/n): " DIRECT_KEY
+  if [[ "$DIRECT_KEY" == "y" ]]; then
+    echo "Please paste your public key (press Enter, then Ctrl+D when done):"
+    PUBKEY=$(cat)
   else
-    echo "SSH key file not found at $KEY_PATH. Skipping key copy."
+    read -p "Enter path to your public SSH key (default: ~/.ssh/id_rsa.pub): " KEY_PATH
+    KEY_PATH=${KEY_PATH:-~/.ssh/id_rsa.pub}
+    if [[ -f "$KEY_PATH" ]]; then
+      PUBKEY=$(cat "$KEY_PATH")
+    else
+      echo "SSH key file not found at $KEY_PATH. Skipping key copy."
+      continue
+    fi
   fi
+  
+  pct exec "$CTID" -- mkdir -p /home/"$USERNAME"/.ssh
+  pct exec "$CTID" -- bash -c "echo '$PUBKEY' >> /home/$USERNAME/.ssh/authorized_keys"
+  pct exec "$CTID" -- chown -R "$USERNAME":"$USERNAME" /home/"$USERNAME"/.ssh
+  pct exec "$CTID" -- chmod 700 /home/"$USERNAME"/.ssh
+  pct exec "$CTID" -- chmod 600 /home/"$USERNAME"/.ssh/authorized_keys
 
   read -p "Disable root SSH login for security? (y/n): " DISABLEROOT
   if [[ "$DISABLEROOT" == "y" ]]; then
