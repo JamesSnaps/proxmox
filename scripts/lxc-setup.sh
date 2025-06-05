@@ -12,6 +12,13 @@ if [[ "$CREATEUSER" == "y" ]]; then
   # Configure sudo to work without password for this user
   pct exec "$CTID" -- bash -c "echo '$USERNAME ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/$USERNAME"
   pct exec "$CTID" -- chmod 440 /etc/sudoers.d/$USERNAME
+  # Verify sudo access
+  pct exec "$CTID" -- bash -c "su - $USERNAME -c 'sudo -n true'"
+  if [ $? -eq 0 ]; then
+    echo "Sudo access configured successfully for $USERNAME"
+  else
+    echo "Warning: Sudo access configuration may have failed for $USERNAME"
+  fi
 fi
 
 echo "Setting up locale..."
