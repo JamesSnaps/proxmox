@@ -10,10 +10,14 @@ if [[ "$CREATEUSER" == "y" ]]; then
   pct exec "$CTID" -- bash -c "id -u $USERNAME &>/dev/null || (adduser --disabled-password --gecos \"\" $USERNAME && usermod -aG sudo $USERNAME)"
 fi
 
+echo "Setting up locale..."
+pct exec "$CTID" -- locale-gen en_US.UTF-8
+pct exec "$CTID" -- update-locale LANG=en_US.UTF-8
+
 echo "Installing OpenSSH in container $CTID..."
 
 pct exec "$CTID" -- apt update
-pct exec "$CTID" -- apt install -y openssh-server
+pct exec "$CTID" -- apt install -y openssh-server locales
 
 echo "Enabling SSH service..."
 pct exec "$CTID" -- systemctl enable ssh
