@@ -5,6 +5,11 @@
 read -p "Enter LXC Container ID: " CTID
 read -p "Enter username to enable SSH for: " USERNAME
 
+read -p "Create user '$USERNAME' if it doesn't exist? (y/n): " CREATEUSER
+if [[ "$CREATEUSER" == "y" ]]; then
+  pct exec "$CTID" -- bash -c "id -u $USERNAME &>/dev/null || (adduser --disabled-password --gecos \"\" $USERNAME && usermod -aG sudo $USERNAME)"
+fi
+
 echo "Installing OpenSSH in container $CTID..."
 
 pct exec "$CTID" -- apt update
@@ -34,6 +39,13 @@ if [[ "$COPYKEY" == "y" ]]; then
     pct exec "$CTID" -- chmod 600 /home/"$USERNAME"/.ssh/authorized_keys
   else
     echo "SSH key file not found at $KEY_PATH. Skipping key copy."
+  fi
+
+  read -p "Disable root SSH login for security? (y/n): " DISABLEROOT
+  if [[ "$DISABLEROOT" == "y" ]]; then
+    pct exec "$CTID" -- sed -i 's/^#*PermitRootLogin.*/PermitRootLogin no/' /etc/ssh/sshd_config
+    pct exec "$CTID" -- systemctl restart ssh
+    echo "Root SSH login disabled."
   fi
 fi
 
