@@ -7,7 +7,11 @@ read -p "Enter username to enable SSH for: " USERNAME
 
 read -p "Create user '$USERNAME' if it doesn't exist? (y/n): " CREATEUSER
 if [[ "$CREATEUSER" == "y" ]]; then
-  pct exec "$CTID" -- bash -c "id -u $USERNAME &>/dev/null || (adduser --disabled-password --gecos \"\" $USERNAME && usermod -aG sudo $USERNAME)"
+  # Create user with a temporary password that will be changed later if needed
+  pct exec "$CTID" -- bash -c "id -u $USERNAME &>/dev/null || (adduser --gecos \"\" $USERNAME && usermod -aG sudo $USERNAME)"
+  # Configure sudo to work without password for this user
+  pct exec "$CTID" -- bash -c "echo '$USERNAME ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/$USERNAME"
+  pct exec "$CTID" -- chmod 440 /etc/sudoers.d/$USERNAME
 fi
 
 echo "Setting up locale..."
