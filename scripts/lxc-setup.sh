@@ -1,6 +1,26 @@
 # Sets up a new LXC container for ssh access
 #!/bin/bash
 
+echo "📝 This script is designed to be run on the Proxmox host (not inside the LXC container) and will:"
+echo "  1. Create a new user (optional)"
+echo "  2. Configure sudo access for the user"
+echo "  3. Set up locale and install OpenSSH"
+echo "  4. Enable and start the SSH service"
+echo "  5. Set up password authentication (optional)"
+echo "  6. Configure SSH key-based authentication (optional)"
+echo "  7. Disable root SSH login (optional)"
+echo ""
+echo "⚠️  Note: This script requires Proxmox VE (pct) command access and sudo privileges."
+echo ""
+
+# Ask for confirmation
+read -p "Would you like to proceed? (y/N) " -n 1 -r
+echo ""
+if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    echo "❌ Operation cancelled by user."
+    exit 1
+fi
+
 # Interactive SSH setup for LXC
 read -p "Enter LXC Container ID: " CTID
 read -p "Enter username to enable SSH for: " USERNAME

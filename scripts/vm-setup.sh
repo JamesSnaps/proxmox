@@ -1,5 +1,32 @@
 #!/bin/bash
 
+echo "📝 This script is designed to be run inside a newly created VM and will:"
+echo "  1. Configure passwordless sudo for the current user"
+echo "  2. Update system and install prerequisites"
+echo "  3. Install and configure:"
+echo "     - NFS client utilities"
+echo "     - Docker Engine and Docker Compose"
+echo "     - Automatic security updates"
+echo "     - QEMU Guest Agent"
+echo "     - Netdata monitoring"
+echo "  4. Configure Docker to use shared VirtioFS storage"
+echo "  5. Set up SSH key-based authentication"
+echo ""
+echo "⚠️  Note: This script requires sudo privileges and will:"
+echo "    - Modify system configurations"
+echo "    - Install multiple packages"
+echo "    - Configure Docker storage"
+echo "    - Change SSH authentication settings"
+echo ""
+
+# Ask for confirmation
+read -p "Would you like to proceed? (y/N) " -n 1 -r
+echo ""
+if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    echo "❌ Operation cancelled by user."
+    exit 1
+fi
+
 # Allow passwordless sudo for the current user
 echo "$USER ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/$USER
 

@@ -9,6 +9,23 @@ NETPLAN_FILE="/etc/netplan/99-vlans.yaml"
 # Interfaces to bring up
 INTERFACES=("ens19" "ens20" "ens21" "ens22" "ens23")
 
+echo "📝 This script is designed to be run on a VM and will:"
+echo "  1. Create a Netplan configuration file at $NETPLAN_FILE"
+echo "  2. Configure the following interfaces: ${INTERFACES[*]}"
+echo "  3. Apply the Netplan configuration"
+echo "  4. Bring up the interfaces manually"
+echo ""
+echo "⚠️  Note: This script requires root privileges to modify network configurations."
+echo ""
+
+# Ask for confirmation
+read -p "Would you like to proceed? (y/N) " -n 1 -r
+echo ""
+if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    echo "❌ Operation cancelled by user."
+    exit 1
+fi
+
 echo "🔧 Creating Netplan config for VLAN interfaces..."
 
 # Build Netplan YAML

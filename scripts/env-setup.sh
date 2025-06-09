@@ -1,3 +1,22 @@
+#!/bin/bash
+
+echo "📝 This script will:"
+echo "  1. Install the 1Password CLI tool"
+echo "  2. Sign you into 1Password (if not already signed in)"
+echo "  3. Download your Docker .env file from 1Password"
+echo "  4. Set appropriate permissions on the .env file"
+echo ""
+echo "⚠️  Note: This script requires sudo privileges for installation steps."
+echo ""
+
+# Ask for confirmation
+read -p "Would you like to proceed? (y/N) " -n 1 -r
+echo ""
+if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    echo "❌ Operation cancelled by user."
+    exit 1
+fi
+
 # 🔐 Install 1Password CLI (if not already installed)
 echo "🔐 Installing 1Password CLI..."
 curl -sS https://downloads.1password.com/linux/keys/1password.asc | sudo gpg --dearmor -o /usr/share/keyrings/1password-archive-keyring.gpg

@@ -1,5 +1,34 @@
 #!/bin/bash
 
+echo "📝 This script is designed to be run inside a VM and will set up various mount points by:"
+echo "  1. Creating mount points for Synology NFS shares:"
+echo "     - /mnt/synology_media4k"
+echo "     - /mnt/synology_media"
+echo "     - /mnt/synology_paperless"
+echo "     - /mnt/synology_sort"
+echo "     - /mnt/synology_svrp"
+echo "     - /mnt/synology_syslogs"
+echo "  2. Backing up /etc/fstab to /etc/fstab.bak"
+echo "  3. Adding NFS mount configurations to /etc/fstab"
+echo "  4. Creating mount points for virtiofs shares:"
+echo "     - /mnt/docker-core"
+echo "     - /mnt/plex-data"
+echo "     - /mnt/docker-media"
+echo "     - /mnt/plex-transcodes"
+echo "     - /mnt/downloads"
+echo "  5. Mounting all configured shares"
+echo ""
+echo "⚠️  Note: This script requires sudo privileges and assumes the Synology NAS is accessible at 10.0.10.199"
+echo ""
+
+# Ask for confirmation
+read -p "Would you like to proceed? (y/N) " -n 1 -r
+echo ""
+if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    echo "❌ Operation cancelled by user."
+    exit 1
+fi
+
 echo "📁 Creating mount points..."
 sudo mkdir -p /mnt/synology_media4k
 sudo mkdir -p /mnt/synology_media
