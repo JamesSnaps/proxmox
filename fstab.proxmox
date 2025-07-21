@@ -1,0 +1,19 @@
+# <file system> <mount point> <type> <options> <dump> <pass>
+proc /proc proc defaults 0 0
+#/dev/nvme0n1 /mnt/apps_ext4 ext4 defaults 0 1
+UUID=eabf4183-f15a-498b-b0db-965f4d6fb414 /mnt/apps_ext4 ext4 defaults 0 1
+#10.0.10.199:/volume1/Sort             /mnt/nfs_sort             nfs noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14,retrans=3,nolock,_netdev,nofail,noatime 0 0
+#10.0.10.199:/volume1/SVRP             /mnt/nfs_svrp             nfs noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14,retrans=3,nolock,_netdev,nofail,noatime 0 0
+#10.0.10.199:/volume1/Syslogs          /mnt/nfs_syslogs          nfs noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14,retrans=3,nolock,_netdev,nofail,noatime 0 0
+#10.0.10.199:/volume1/Media            /mnt/synology_media       nfs noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14,retrans=3,nolock,_netdev,nofail,noatime 0 0
+#10.0.10.199:/volume2/Movies4K         /mnt/synology_media4k     nfs noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14,retrans=3,nolock,_netdev,nofail,noatime 0 0
+#10.0.10.199:/volume2/proxmox_backups  /mnt/pve/synology_backups nfs noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14,retrans=3,nolock,_netdev,nofail,noatime 0 0
+#10.0.10.199:/volume1/dlp-tables       /mnt/dlp-tables           nfs noauto,x-systemd.automount,x-systemd.device-timeout=10,timeo=14,retrans=3,nolock,_netdev,nofail,noatime 0 0
+
+//10.0.10.199/Sort             /mnt/nfs_sort             cifs credentials=/etc/smb-cred-synology,iocharset=utf8,vers=3.0,nofail,x-systemd.automount,_netdev 0 0
+//10.0.10.199/SVRP             /mnt/nfs_svrp             cifs credentials=/etc/smb-cred-synology,iocharset=utf8,vers=3.0,nofail,x-systemd.automount,_netdev 0 0
+//10.0.10.199/Syslogs          /mnt/nfs_syslogs          cifs credentials=/etc/smb-cred-synology,iocharset=utf8,vers=3.0,nofail,x-systemd.automount,_netdev 0 0
+//10.0.10.199/Media            /mnt/synology_media       cifs credentials=/etc/smb-cred-synology,iocharset=utf8,vers=3.0,nofail,x-systemd.automount,_netdev 0 0
+//10.0.10.199/Movies4K         /mnt/synology_media4k     cifs credentials=/etc/smb-cred-synology,iocharset=utf8,vers=3.0,nofail,x-systemd.automount,_netdev 0 0
+//10.0.10.199/proxmox_backups  /mnt/pve/synology_backups cifs credentials=/etc/smb-cred-synology,iocharset=utf8,vers=3.0,nofail,x-systemd.automount,_netdev 0 0
+//10.0.10.199/dlp-tables       /mnt/dlp-tables           cifs credentials=/etc/smb-cred-synology,iocharset=utf8,vers=3.0,nofail,x-systemd.automount,_netdev 0 0
