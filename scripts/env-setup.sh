@@ -10,7 +10,7 @@ echo "⚠️  Note: This script requires sudo privileges for installation steps.
 echo ""
 
 # Ask for confirmation
-read -p "Would you like to proceed? (y/N) " -n 1 -r
+read -p "Would you like to proceed? (y/N) " -n 1 -r < /dev/tty
 echo ""
 if [[ ! $REPLY =~ ^[Yy]$ ]]; then
     echo "❌ Operation cancelled by user."
