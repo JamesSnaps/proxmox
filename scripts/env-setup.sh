@@ -10,7 +10,20 @@ echo "⚠️  Note: This script requires sudo privileges for installation steps.
 echo ""
 
 # Ask for confirmation
-read -p "Would you like to proceed? (y/N) " -n 1 -r < /dev/tty
+# When script is piped (curl | bash), stdin contains the script, so read from /dev/tty
+# When run directly, stdin is the terminal, so read normally
+if [ -t 0 ]; then
+    # stdin is a terminal, read directly
+    read -p "Would you like to proceed? (y/N) " -n 1 -r
+else
+    # stdin is piped (script content), read from /dev/tty
+    # In a real terminal (curl | bash), /dev/tty will be available
+    read -p "Would you like to proceed? (y/N) " -n 1 -r < /dev/tty 2>/dev/null || {
+        echo ""
+        echo "❌ Cannot read from terminal. Please run this script in an interactive terminal."
+        exit 1
+    }
+fi
 echo ""
 if [[ ! $REPLY =~ ^[Yy]$ ]]; then
     echo "❌ Operation cancelled by user."
