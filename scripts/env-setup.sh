@@ -45,7 +45,10 @@ if ! op account list | grep -q 'SIGNED_IN'; then
 fi
 
 echo "📄 Downloading .env file from 1Password..."
-if ! op document get "docker .env" --vault "Family" > /home/$USER/docker/.env; then
+# The .env lives only in 1Password (see docs/auto-deploy.md in the docker
+# repo). After this first copy, docker/scripts/env-refresh.sh keeps it current
+# using a read-only service account.
+if ! op document get "${OP_ENV_DOCUMENT:-docker .env}" --vault "${OP_ENV_VAULT:-Homelab}" > /home/$USER/docker/.env; then
     echo "❌ Failed to download .env file from 1Password"
     exit 1
 fi
